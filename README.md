@@ -23,6 +23,15 @@ There's one main function, which is `dtft_bins = goertzel1D(x, fs, hz)`
 * `fs` is the scalar sample rate of `x`
 * `hz` is a vector of frequencies at which to calculate the DTFT/Goertzel coefficients
 
+Once the code is built, you should be able to import it and use it. One example is
+```
+from cgoertzel import goertzel1D
+from numpy.random import randn
+x = randn(1000)
+fs = 100
+hz = [1, 2, 3, 4, 5]
+g = goertzel1D(x, fs, hz)
+```
 
 ### Prerequisites
 
@@ -38,3 +47,10 @@ To build and use `cgoertzel` requires the following libraries
 ## License
 
 Different files have different licenses, but everything is generally permissive; BSD or MIT.
+
+## Acknowledgments
+
+* Thanks to the authors of the Generalized Goertzel paper:
+> [Sysel and Rajmic: Goertzel algorithm generalized to non-integer multiples of fundamental frequency. EURASIP Journal on Advances in Signal Processing 2012 2012:56](https://asp-eurasipjournals.springeropen.com/track/pdf/10.1186/1687-6180-2012-56/)
+
+* Thanks to the developers of `cffi`
