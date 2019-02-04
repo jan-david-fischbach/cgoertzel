@@ -1,9 +1,40 @@
-# `cgoertzel` - a Goertzel algorithm written in C with a NumPy wrapper
+# `cgoertzel`
+### a Goertzel algorithm written in C with a NumPy wrapper
 
-This contains a simple implementation of a Discrete Time Fourier Transform (DTFT). The implementation uses what is known as
+This contains a simple implementation of a Discrete Time Fourier Transform (DTFT). The C implementation uses what is known as
 > 'Generalized Goertzel algorithm with shortened iteration loop'
 
 This term comes from the paper
 > [Sysel and Rajmic: Goertzel algorithm generalized to non-integer multiples of fundamental frequency. EURASIP Journal on Advances in Signal Processing 2012 2012:56](https://asp-eurasipjournals.springeropen.com/track/pdf/10.1186/1687-6180-2012-56/)
 
-More polished information will be added over time.
+The C implementation is contained in `cgoertzel.c`. The Python wrapper around that C implementation is contained in `cgoertzel.py`.
+
+## Getting Started
+
+To build the code, change to the `cgoertzel` directory and run
+```
+python3 cgoertzel_build.py
+```
+
+That should leave one or more binary files named something like `_cgoertzel.cpython-37m-darwin.so` in the same directory named `cgoertzel`.
+
+There's one main function, which is `dtft_bins = goertzel1D(x, fs, hz)`
+* `x` is the input vector to the DTFT/Goertzel Operation
+* `fs` is the scalar sample rate of `x`
+* `hz` is a vector of frequencies at which to calculate the DTFT/Goertzel coefficients
+
+
+### Prerequisites
+
+To build and use `cgoertzel` requires the following libraries
+* `python3` with
+  * `cffi` with a configured compiler
+  * `numpy`
+
+## Authors
+
+* **Dave Crist**
+
+## License
+
+Different files have different licenses, but everything is generally permissive; BSD or MIT.
