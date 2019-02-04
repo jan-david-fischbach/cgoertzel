@@ -38,28 +38,28 @@ gabs = abs(goertzel1D(x, fs, hz_to_check))
 figure(); plot(hz_to_check, gabs, 'o-'); grid()
 """
 def goertzel1D(x, fs, hz):
-    cin = np.array(x).flatten().astype('float32')
+    # Make C compatible versions of NumPy Arrays
+    cin = np.array(x).flatten().astype("float64")
     cnsamp = ffi.cast("int", len(x))
-    cfs = ffi.cast("float", fs)
-    chz = np.array(hz).flatten().astype('float32')
+    cfs = ffi.cast("double", fs)
+    chz = np.array(hz).flatten().astype("float64")
     cnhz = ffi.cast("int", len(hz))
-    cout = np.zeros(len(hz)*2, dtype="float32")
-
-    print("cnhz = {}".format(cnhz))
+    cout = np.zeros(len(hz)*2, dtype="float64")
 
     # Use numpy/ctypes trick to make valid C pointer from numpy array
     # https://stackoverflow.com/questions/16276268/how-to-pass-a-numpy-array-into-a-cffi-function-and-how-to-get-one-back-out
-    p_cin  = ffi.cast("float *", ffi.from_buffer(cin))
-    p_chz  = ffi.cast("float *", ffi.from_buffer(chz))
-    p_cout = ffi.cast("float *", ffi.from_buffer(cout))
+    p_cin  = ffi.cast("double *", ffi.from_buffer(cin))
+    p_chz  = ffi.cast("double *", ffi.from_buffer(chz))
+    p_cout = ffi.cast("double *", ffi.from_buffer(cout))
 
+    # Call C function, goertzel1D
     ret = lib.goertzel1D(p_cin, cnsamp, cfs, p_chz, cnhz, p_cout)
 
     if 0 !=  ret:
         print("ERR: non-zero exit received from C extension: goertzel1D = "+str(ret))
 
+    # Create NumPy Array from cout
     pyout = cout[0::2] + (1j * cout[1::2])
-    print(pyout.shape)
     return pyout
 # end goertzel1D
 

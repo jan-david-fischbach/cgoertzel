@@ -25,7 +25,7 @@ from cffi import FFI
 ffibuilder = FFI()
 
 ffibuilder.cdef(
-    "int goertzel1D(float *invec, int NSAMP, float fs, float *hzvec, int NHZ, float *cpx_out);"
+    "int goertzel1D(double *invec, int NSAMP, double fs, double *hzvec, int NHZ, double *cpx_out);"
 )
 
 # source_str = ""

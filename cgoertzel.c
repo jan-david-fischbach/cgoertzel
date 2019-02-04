@@ -32,37 +32,37 @@
 #endif
 
 typedef struct _CPX {
-    float r;
-    float i;
+    double r;
+    double i;
 } CPX;
 
 typedef struct goertzel1D_t {
     int NBINS;
-    float *BIN;
-    float *A;
-    float *B;
+    double *BIN;
+    double *A;
+    double *B;
     CPX *C;
     CPX *D;
 } goertzel1D_t;
 
-int init_goertzel1D(goertzel1D_t *g,  float fs, int NSAMP, float *hzvec, int NBINS);
+int init_goertzel1D(goertzel1D_t *g,  double fs, int NSAMP, double *hzvec, int NBINS);
 int free_goertzel1D(goertzel1D_t *g);
-int run_goertzel1D(goertzel1D_t *g, float *in, int NSAMP, CPX *out);
+int run_goertzel1D(goertzel1D_t *g, double *in, int NSAMP, CPX *out);
 
 // below code written strictly according to figure 4 of 
 // https://asp-eurasipjournals.springeropen.com/track/pdf/10.1186/1687-6180-2012-56/
 
-int init_goertzel1D(goertzel1D_t *g,  float fs, int NSAMP, float *hzvec, int NBINS) {
+int init_goertzel1D(goertzel1D_t *g,  double fs, int NSAMP, double *hzvec, int NBINS) {
     int ix;
-    float fNSAMP = (float)(NSAMP);
+    double fNSAMP = (double)(NSAMP);
 
     // set NBINS
     g->NBINS = NBINS;
     
     // malloc buffers for pointers: HZ, BIN, A, B, C, D
-    g->BIN = (float *) (malloc( sizeof(float) * g->NBINS ));
-    g->A   = (float *) (malloc( sizeof(float) * g->NBINS ));
-    g->B   = (float *) (malloc( sizeof(float) * g->NBINS ));
+    g->BIN = (double *) (malloc( sizeof(double) * g->NBINS ));
+    g->A   = (double *) (malloc( sizeof(double) * g->NBINS ));
+    g->B   = (double *) (malloc( sizeof(double) * g->NBINS ));
     g->C   = (CPX   *) (malloc( sizeof(CPX  ) * g->NBINS ));
     g->D   = (CPX   *) (malloc( sizeof(CPX  ) * g->NBINS ));
 
@@ -70,13 +70,13 @@ int init_goertzel1D(goertzel1D_t *g,  float fs, int NSAMP, float *hzvec, int NBI
     for(ix=0; ix<g->NBINS; ix++) {
         g->BIN[ix] = hzvec[ix] / (fs/fNSAMP); // (Hz) / (Hz/Bin) => Bin
         g->A[ix] = 2 * M_PI * g->BIN[ix] / fNSAMP;
-        g->B[ix] = 2 * cosf(g->A[ix]);
-        g->C[ix].r = cosf(-(g->A[ix])); // real component of exp(-jA)
-        g->C[ix].i = sinf(-(g->A[ix])); // imag component of exp(-jA)
-        g->D[ix].r = cosf( -2 * M_PI * g->BIN[ix] * (fNSAMP-1.0) / fNSAMP); // real component of exp(-j [2*M_PI*k*(N-1)/N)] )
-        g->D[ix].i = sinf( -2 * M_PI * g->BIN[ix] * (fNSAMP-1.0) / fNSAMP); // imag component of exp(-j [2*M_PI*k*(N-1)/N)] )
-        printf("ix=%02d, hz=%2.3f, bin=%2.3f, A=%2.6f, B=%2.6f, C=[%2.6f, %2.6f], D=[%2.6f, %2.6f]\n", 
-                ix, hzvec[ix], g->BIN[ix], g->A[ix], g->B[ix], g->C[ix].r, g->C[ix].i, g->D[ix].r, g->D[ix].i);
+        g->B[ix] = 2 * cos(g->A[ix]);
+        g->C[ix].r = cos(-(g->A[ix])); // real component of exp(-jA)
+        g->C[ix].i = sin(-(g->A[ix])); // imag component of exp(-jA)
+        g->D[ix].r = cos( -2 * M_PI * g->BIN[ix] * (fNSAMP-1.0) / fNSAMP); // real component of exp(-j [2*M_PI*k*(N-1)/N)] )
+        g->D[ix].i = sin( -2 * M_PI * g->BIN[ix] * (fNSAMP-1.0) / fNSAMP); // imag component of exp(-j [2*M_PI*k*(N-1)/N)] )
+        // printf("ix=%02d, hz=%2.3f, bin=%2.3f, A=%2.6f, B=%2.6f, C=[%2.6f, %2.6f], D=[%2.6f, %2.6f]\n", 
+        //         ix, hzvec[ix], g->BIN[ix], g->A[ix], g->B[ix], g->C[ix].r, g->C[ix].i, g->D[ix].r, g->D[ix].i);
     }
 
     return 0; // FIXME, other error codes?
@@ -92,8 +92,8 @@ int free_goertzel1D(goertzel1D_t *g) {
     return 0;
 }
 
-int run_goertzel1D(goertzel1D_t *g, float *in, int NSAMP, CPX *out) {
-    float s0, s1, s2;
+int run_goertzel1D(goertzel1D_t *g, double *in, int NSAMP, CPX *out) {
+    double s0, s1, s2;
     CPX tc1, tc2; // tcX = "temporary, complex" variable
 
     int bix, six; // loop variables
@@ -113,7 +113,7 @@ int run_goertzel1D(goertzel1D_t *g, float *in, int NSAMP, CPX *out) {
         s0 = in[NSAMP-1] + (g->B[bix]*s1) - s2;   // 1-of-3
         
         tc1.r = s0 - s1*(g->C[bix].r); // 2-of-3, real
-        tc1.i = -1 * s1*(g->C[bix].i); // 2-of-3, imag
+        tc1.i = -(   s1*(g->C[bix].i)); // 2-of-3, imag
 
         // Assign result directly to output        
         tc2.r = (tc1.r*(g->D[bix].r)) - (tc1.i*(g->D[bix].i)); // 3-of-3, real
@@ -126,7 +126,7 @@ int run_goertzel1D(goertzel1D_t *g, float *in, int NSAMP, CPX *out) {
 }
 
 
-int goertzel1D(float *invec, int NSAMP, float fs, float *hzvec, int NBINS, float *cpx_out) {
+int goertzel1D(double *invec, int NSAMP, double fs, double *hzvec, int NBINS, double *cpx_out) {
     goertzel1D_t _g1d;
     goertzel1D_t *g1d = &(_g1d);
 
