@@ -74,8 +74,8 @@ gabs = abs(goertzel2D(x, fs, hz_to_check))
 figure(); plot(hz_to_check, gabs, 'o-'); grid()
 """
 def goertzel2D(x, fs, hzvec):
-    x = x.astype('float32')
-    y = np.zeros( (len(hzvec), x.shape[1]), dtype='complex64' )
+    x = x.astype('float64')
+    y = np.zeros( (len(hzvec), x.shape[1]), dtype='complex128' )
     for cix in range(x.shape[1]):
         y[:, cix] = goertzel1D(x[:, cix], fs, hzvec)
 
