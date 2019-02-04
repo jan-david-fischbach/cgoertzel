@@ -7,7 +7,9 @@ This contains a simple implementation of a Discrete Time Fourier Transform (DTFT
 This term comes from the paper
 > [Sysel and Rajmic: Goertzel algorithm generalized to non-integer multiples of fundamental frequency. EURASIP Journal on Advances in Signal Processing 2012 2012:56](https://asp-eurasipjournals.springeropen.com/track/pdf/10.1186/1687-6180-2012-56/)
 
-The C implementation is contained in `cgoertzel.c`. The Python wrapper around that C implementation is contained in `cgoertzel.py`.
+The C implementation is contained in `cgoertzel.c`. The Python wrapper around that C implementation is contained in `cgoertzel.py`. The script to build the code is `cgoertzel_build.py`.
+
+This is currently not a polished package, but rather a simple utility in the interest of flexibility and speed.
 
 ## Getting Started
 
