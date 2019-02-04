@@ -9,7 +9,7 @@ This term comes from the paper
 
 The C implementation is contained in `cgoertzel.c`. The Python wrapper around that C implementation is contained in `cgoertzel.py`. The script to build the code is `cgoertzel_build.py`.
 
-This is currently not a polished package, but rather a simple utility in the interest of flexibility and speed.
+This is currently not a polished package, but rather a simple utility in the interests of flexibility and speed.
 
 ## Getting Started
 
