@@ -37,22 +37,25 @@ typedef struct _CPX {
 } CPX;
 
 typedef struct goertzel1D_t {
-    int NBINS;
-    double *BIN;
-    double *A;
-    double *B;
-    CPX *C;
-    CPX *D;
+    int    NBINS ;
+    int    NSAMP ;
+    int    NSNAP ;
+    double *BIN  ;
+    int    *SNAP ;
+    double *A    ;
+    double *B    ;
+    CPX    *C    ;
+    CPX    *D    ;
 } goertzel1D_t;
 
-int init_goertzel1D(goertzel1D_t *g,  double fs, int NSAMP, double *hzvec, int NBINS, *snapvec, int NSNAP);
+int init_goertzel1D(goertzel1D_t *g,  double fs, int NSAMP, double *hzvec, int NBINS, int *snapvec, int NSNAP);
 int free_goertzel1D(goertzel1D_t *g);
 int run_goertzel1D(goertzel1D_t *g, double *in, int NSAMP, CPX *out);
 
 // below code written strictly according to figure 4 of 
 // https://asp-eurasipjournals.springeropen.com/track/pdf/10.1186/1687-6180-2012-56/
 
-int init_goertzel1D(goertzel1D_t *g,  double fs, int NSAMP, double *hzvec, int NBINS, *snapvec, int NSNAP) {
+int init_goertzel1D(goertzel1D_t *g,  double fs, int NSAMP, double *hzvec, int NBINS, int *snapvec, int NSNAP) {
     int ix;
     double fNSAMP = (double)(NSAMP);
 
@@ -108,7 +111,7 @@ int free_goertzel1D(goertzel1D_t *g) {
 }
 
 int run_goertzel1D(goertzel1D_t *g, double *in, int NSAMP, CPX *out) {
-    double s0, s1, s2;
+    double s0, s1, s2, s0t;
     CPX tc1, tc2; // tcX = "temporary, complex" variable
 
     int bix, six, snpix=0, outix=0; // loop variables
@@ -146,13 +149,13 @@ int run_goertzel1D(goertzel1D_t *g, double *in, int NSAMP, CPX *out) {
 }
 
 
-int goertzel1D(double *invec, int NSAMP, double fs, double *hzvec, int NBINS, double *cpx_out) {
+int goertzel1D(double *invec, int NSAMP, double fs, double *hzvec, int NBINS, int *snapvec, int NSNAP, double *cpx_out) {
     goertzel1D_t _g1d;
     goertzel1D_t *g1d = &(_g1d);
 
     int ret;
 
-    ret = init_goertzel1D(g1d, fs, NSAMP, hzvec, NBINS);
+    ret = init_goertzel1D(g1d, fs, NSAMP, hzvec, NBINS, snapvec, NSNAP);
     if( 0 != ret) {
         printf("ERR: goertzel1D call to init_goertzel1D = %d\n", ret);
         return ret;
