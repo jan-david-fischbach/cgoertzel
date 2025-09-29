@@ -25,7 +25,7 @@ from cffi import FFI
 ffibuilder = FFI()
 
 ffibuilder.cdef(
-    "int goertzel1D(double *invec, int NSAMP, double fs, double *hzvec, int NHZ, double *cpx_out);"
+    "int goertzel1D(double *invec, int NSAMP, double fs, double *hzvec, int NBINS, double *cpx_out);"
 )
 
 # source_str = ""
@@ -33,11 +33,12 @@ ffibuilder.cdef(
 #     source_str = f.read()
 # ffibuilder.set_source("_cgoertzel",)
 
-ffibuilder.set_source("_cgoertzel",  # name of the output C extension
+ffibuilder.set_source("cgoertzel._cgoertzel",  # name of the output C extension
 """
     #include "cgoertzel.h"
 """,
-    sources=["cgoertzel.c"],   # includes pi.c as additional sources
+    sources=["cgoertzel/cgoertzel.c"],   # includes cgoertzel.c as additional sources
+    include_dirs=["cgoertzel"],  # add the cgoertzel directory to include path
     libraries=["m"])    # on Unix, link with the math library
 
 if __name__ == "__main__":

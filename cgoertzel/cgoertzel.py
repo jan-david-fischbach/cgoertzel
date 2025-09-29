@@ -25,7 +25,7 @@
 import numpy as np
 
 # if this fails, the import'ing file should handle the exception
-from _cgoertzel import ffi, lib
+from cgoertzel._cgoertzel import ffi, lib
 
 """
 # To test goertzel1D, try the following

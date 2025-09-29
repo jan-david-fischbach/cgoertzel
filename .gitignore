@@ -1,0 +1,8 @@
+_cgoertzel*
+build
+*.so
+*.egg-info
+*.o
+
+__pycache__
+*.pyc
